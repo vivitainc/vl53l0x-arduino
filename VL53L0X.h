@@ -130,6 +130,7 @@ class VL53L0X
     inline void setTimeout(uint16_t timeout) { io_timeout = timeout; }
     inline uint16_t getTimeout(void) { return io_timeout; }
     bool timeoutOccurred(void);
+    uint8_t wireErrorOccurred(void);
 
   private:
     // TCC: Target CentreCheck
@@ -153,9 +154,16 @@ class VL53L0X
     uint16_t io_timeout;
     bool did_timeout;
     uint16_t timeout_start_ms;
+    uint8_t wire_status;
 
     uint8_t stop_variable; // read by init and used when starting measurement; is StopVariable field of VL53L0X_DevData_t structure in API
     uint32_t measurement_timing_budget_us;
+
+    inline void setWireStatusBit(void) {
+      if (last_status) {
+        bitSet(wire_status, last_status);
+      }
+    }
 
     bool getSpadInfo(uint8_t * count, bool * type_is_aperture);
 
